@@ -1,6 +1,13 @@
 <?php
 //屏蔽错误
 error_reporting(0);
+
+global $mysqlhost;$mysqluser;$mysqlpass;$mysqlname;
+// 数据库配置信息
+$mysqlhost="localhost";
+$mysqluser="ft";
+$mysqlpass="sp666666";
+$mysqlname="ft";
 //获取网站基础信息
 $conn = rdata("/Admin/Tool/conn.php");
 //获取用户设备头信息
@@ -30,7 +37,8 @@ function wdata($path,$arr=array()){
 function setsql($sql)
 {
     // echo($sql);
-    $conn = mysqli_connect("localhost", "ft", "sp666666", "ft");
+    global $mysqlhost;$mysqluser;$mysqlpass;$mysqlname;
+    $conn = mysqli_connect($mysqlhost, $mysqluser, $mysqlpass, $mysqlname);
     if (!$conn) {
         die("请检查数据库账号密码是否正确");//mysqli_connect_error();
     }
@@ -166,6 +174,7 @@ function getgl($post)
     $post = str_replace("exec", "", $post);
     $post = str_replace("set", "", $post);
     $post = nl2br($post); // 回车转换
+    // $post= htmlspecialchars($post); // html标记转换
     return $post;
 }
 
