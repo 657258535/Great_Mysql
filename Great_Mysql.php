@@ -78,7 +78,7 @@ function sqlg($from, $id, $value){
 //查询数据库
 function sqlc($from, $title="*",$by='order by id desc'){//order by id desc
 
-$p = empty($_REQUEST['p']) and (int)$_REQUEST['p']<1 ? 1 : (int)$_REQUEST['p'];
+$p = empty($_REQUEST['p']) or (int)$_REQUEST['p']<1 ? 1 : (int)$_REQUEST['p'];
 $pagenum = 20;//每页输出多少
 $pagezs=ceil(sqlzs($from)/$pagenum);//总页数
 $p = $p > $pagezs ? $pagezs : $p;
