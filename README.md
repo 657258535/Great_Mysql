@@ -61,15 +61,18 @@ array(
 
 ### 用户传给数据库的数据建议用 getpost()函数接收
 
+
+rdata("站内的绝对路径")//简易的本地数据读取
+
+wdata("站内的绝对路径",$arr)//简易的本地数据存入[数组类型]
+
+
+例如：
+
 ```
-rdata(站内的绝对路径)//简易的本地数据读取
-
-wdata(站内的绝对路径)//简易的本地数据存入[数组类型]
+wdata("/Admin/Tool/conn.php",$array);
+rdata("/Admin/Tool/conn.php");
 ```
-
-1.例如：wdata("/Admin/Tool/conn.php",$array);
-
-2.例如：rdata("/Admin/Tool/conn.php");
 
 echolist($str,$arr)//简易的模版引擎$arr为数组，$str 为文本型的模版字符串
 
@@ -83,16 +86,20 @@ $str="<title>{{title}}</title><p>{{data}}</p>";
 
 echo echolist($str,$data);//返回处理后的文本
 ```
+
 randabc();//可以生成：随机密码，礼包码，序列号，验证码等随机字母
 
 例如：
+
 ```
 randabc(8);//返回处理后指定长度的文本
 ```
 
-pass();//用于密码加密入库，增强安全性？
+pass();//用于密码加密入库，增强安全性？no no no , 是想节省点服务器资源而已，session不存在的！
 
 例子：
+
 ```
 pass("123456");//返回处理后的md5文本,应该是不可逆了？
 ```
+
