@@ -4,6 +4,12 @@ Mysql 的傻瓜式应用方法，不必劳神学习命令，Great_Mysql 帮助�
 
 ### 1.使用 PHP：include、require、include_once、require_once 其中之一的函数引入此文件
 
+例如：
+
+```
+include("Great_Mysql.php");
+```
+
 ### 2.语法概括：
 
 新增数据语法：
