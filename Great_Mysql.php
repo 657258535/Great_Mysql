@@ -1,7 +1,8 @@
 <?php
 //屏蔽错误
 error_reporting(0);
-
+header('Access-Control-Allow-Origin: *');
+date_default_timezone_set('Asia/Shanghai');
 global $mysqlhost;$mysqluser;$mysqlpass;$mysqlname;
 // 数据库配置信息
 $mysqlhost="localhost";
