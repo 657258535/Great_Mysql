@@ -1,14 +1,14 @@
 <?php
 //屏蔽错误
-error_reporting(0);
+// error_reporting(0);
 header('Access-Control-Allow-Origin: *');
 date_default_timezone_set('Asia/Shanghai');
-global $mysqlhost;$mysqluser;$mysqlpass;$mysqlname;
+
 // 数据库配置信息
 $mysqlhost="localhost";
-$mysqluser="ft";
-$mysqlpass="sp666666";
-$mysqlname="ft";
+$mysqluser="dbuser";
+$mysqlpass="123456";
+$mysqlname="dbname";
 //获取网站基础信息
 $conn = rdata("/Admin/Tool/conn.php");
 //获取用户设备头信息
@@ -38,8 +38,8 @@ function wdata($path,$arr=array()){
 function setsql($sql)
 {
     // echo($sql);
-    global $mysqlhost;$mysqluser;$mysqlpass;$mysqlname;
-    $conn = mysqli_connect($mysqlhost, $mysqluser, $mysqlpass, $mysqlname);
+
+    $conn = mysqli_connect($GLOBALS["mysqlhost"], $GLOBALS["mysqluser"], $GLOBALS["mysqlpass"], $GLOBALS["mysqlname"]);
     if (!$conn) {
         die("请检查数据库账号密码是否正确");//mysqli_connect_error();
     }
@@ -89,20 +89,22 @@ function sqlc($from, $title="*",$by='order by id desc'){//order by id desc
 
 $p = empty($_REQUEST['p']) or (int)$_REQUEST['p']<1 ? 1 : (int)$_REQUEST['p'];
 $pagenum = 20;//每页输出多少
-$pagezs=ceil(sqlzs($from)/$pagenum);//总页数
+$pzs=sqlzs($from);
+$pagezs=ceil($pzs/$pagenum);//总页数
 $p = $p > $pagezs ? $pagezs : $p;
 $s = $p*$pagenum;
 $sp = ($p-1)<1 ? 1 : ($p-1);//上一页
 $xp = ($p+1)>$pagezs ? $pagezs : ($p+1);//下一页
-$page = ($s-$pagenum)<1 ? 1 : $s-$pagenum;//分页获取数据的位置
+$page = ($s-$pagenum)<0 ? 0 : $s-$pagenum;//分页获取数据的位置
 
     $sql="select $title from $from $by limit $page,$pagenum";
     $data=array(
         "data"=> setsql($sql),//查询结果
-        "page"=>$p,//当前页
+        "page"=>(int)$p,//当前页
         "pagesize"=>$pagezs,//总页数
         "page-pre"=>$sp,//上一页
-        "page-next"=>$xp//下一页
+        "page-next"=>$xp,//下一页
+        "pagezs"=>$pzs//总页
         );
     //   echo $sql;
 	return $data;

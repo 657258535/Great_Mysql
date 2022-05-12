@@ -54,6 +54,7 @@ array(
   "pagesize"=>总页数,
   "page-pre"=>上一页,
   "page-next"=>下一页
+  "pagezs"=>总条数
 );
 ```
 
