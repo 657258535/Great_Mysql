@@ -104,7 +104,7 @@ $page = ($s-$pagenum)<0 ? 0 : $s-$pagenum;//分页获取数据的位置
         "pagesize"=>$pagezs,//总页数
         "page-pre"=>$sp,//上一页
         "page-next"=>$xp,//下一页
-        "pagezs"=>$pzs//总页
+        "pagezs"=>$pzs//总条数
         );
     //   echo $sql;
 	return $data;
