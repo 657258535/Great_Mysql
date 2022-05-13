@@ -6,9 +6,9 @@ date_default_timezone_set('Asia/Shanghai');
 
 // 数据库配置信息
 $mysqlhost="localhost";
-$mysqluser="dbuser";
-$mysqlpass="123456";
-$mysqlname="dbname";
+$mysqluser="ft";
+$mysqlpass="sp666666";
+$mysqlname="ft";
 //获取网站基础信息
 $conn = rdata("/Admin/Tool/conn.php");
 //获取用户设备头信息
@@ -87,16 +87,18 @@ function sqlg($from, $id, $value){
 //查询数据库
 function sqlc($from, $title="*",$by='order by id desc'){//order by id desc
 
-$p = empty($_REQUEST['p']) or (int)$_REQUEST['p']<1 ? 1 : (int)$_REQUEST['p'];
+$p = empty((int)$_REQUEST['p']) ? 1 : (int)$_REQUEST['p'];
+
 $pagenum = 20;//每页输出多少
 $pzs=sqlzs($from);
-$pagezs=ceil($pzs/$pagenum);//总页数
+$pagezs=(int)ceil($pzs/$pagenum);//总页数
 $p = $p > $pagezs ? $pagezs : $p;
+$p = $p < 1 ? 1 : $p;
 $s = $p*$pagenum;
 $sp = ($p-1)<1 ? 1 : ($p-1);//上一页
 $xp = ($p+1)>$pagezs ? $pagezs : ($p+1);//下一页
 $page = ($s-$pagenum)<0 ? 0 : $s-$pagenum;//分页获取数据的位置
-
+// echo $p;
     $sql="select $title from $from $by limit $page,$pagenum";
     $data=array(
         "data"=> setsql($sql),//查询结果
