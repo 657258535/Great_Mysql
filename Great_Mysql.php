@@ -10,7 +10,7 @@ $mysqluser="ft";
 $mysqlpass="sp666666";
 $mysqlname="ft";
 //获取网站基础信息
-$conn = rdata("/Admin/Tool/conn.php");
+// $conn = rdata("/Admin/Tool/conn.php");
 //获取用户设备头信息
 $agent=strtolower($_SERVER['HTTP_USER_AGENT']);
 // $conns=array(
@@ -33,6 +33,27 @@ function rdata($path){
 //储存数据
 function wdata($path,$arr=array()){
     file_put_contents($_SERVER['DOCUMENT_ROOT'].$path,"<?php exit; ?>"."\n".json_encode($arr,JSON_UNESCAPED_UNICODE));
+}
+function curlPost($url = '', $postData = '', $options = array()){
+    //post访问
+    if (is_array($postData)) {
+        $postData = http_build_query($postData);//把数组转成URL参数：appid=123456&sign=xxxxxxxxxxxxxxxxx
+    }
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30); //设置cURL超时为30秒
+    if (!empty($options)) {
+        curl_setopt_array($ch, $options);
+    }
+    //https请求 不验证证书和host
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    $data = curl_exec($ch);
+    curl_close($ch);
+    return $data;
 }
 //执行sql语句
 function setsql($sql)
@@ -84,6 +105,10 @@ function sqlg($from, $id, $value){
 	return setsql("update $from set $value where id=$id ");
 	//用法：sqlg("article",$id,"title='newtitle',data='newdata'");
 }
+function sqlgs($from, $value){
+	return setsql("update $from set $value");
+	//用法：sqlgs("article","title='newtitle',data='newdata' where id=$id ");
+}
 //查询数据库
 function sqlc($from, $title="*",$by='order by id desc'){//order by id desc
 
@@ -112,16 +137,28 @@ $page = ($s-$pagenum)<0 ? 0 : $s-$pagenum;//分页获取数据的位置
 	return $data;
 	//用法：$data=sqlc("article","id,cid,uid,title,view,time","order by id desc");
 }
-//获取总页数
+//获取总数
 function sqlzs($from, $title="id"){
 	  $arr=setsql("select count($title) from $from");
 	  $count="count(".$title.")";
 	  return $arr[0][$count];
 }
+//获取总和
+function sqlzl($from, $title="id"){
+	  $arr=setsql("select sum($title) from $from");
+	  $count="sum(".$title.")";
+// 	  print_r($arr);
+      if(!empty($arr[0][$count])){
+          return $arr[0][$count];
+      }else{
+         return false;
+      }
+}
 //获取并过滤用户传过来的参数
 function getpost($str){
     return getgl($_REQUEST[$str]);
 }
+
 //过滤sql语句注入
 function getgl($post) 
 {   
@@ -164,7 +201,7 @@ function getgl($post)
     $post = str_replace(";", "", $post);
     $post = str_replace("values", "", $post);
     $post = str_replace("like", "", $post);
-    $post = str_replace("in", "", $post);
+    $post = str_replace(" in", "", $post);
     $post = str_replace("into", "", $post);
     $post = str_replace("?", "", $post);
     $post = str_replace("@", "", $post);
@@ -178,6 +215,7 @@ function getgl($post)
     $post = str_replace("truncate", "", $post);
     $post = str_replace("exec", "", $post);
     $post = str_replace("set", "", $post);
+    
     $post = nl2br($post); // 回车转换
     // $post= htmlspecialchars($post); // html标记转换
     return $post;
@@ -197,11 +235,9 @@ function echolist($str,$data){
         }
     }
     return $s;
+    }else{
+        return false;
     }
-    // else{
-    //     echo "<script>location.href='?p=1'</script>";
-    // }
-    //end
 }
 function randabc( $length = 8 ){
     // 密码字符集，可任意添加你需要的字符
